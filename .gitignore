@@ -1,0 +1,6 @@
+# Added by goreleaser init:
+dist/
+Mods/
+
+# macOS
+.DS_Store

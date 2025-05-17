@@ -1,0 +1,16 @@
+---
+game_version: 1.20.10
+mods_dir: ./Mods
+mods:
+  - id: primitivesurvival
+    version: 3.7.7
+  - id: ExpandedFoods
+    version: 1.7.4
+  - id: ACulinaryArtillery
+    version: 1.2.5
+  - id: CarryOn
+    version: 1.8.0-rc.3
+  - id: BetterRuins
+    version: 0.4.10
+  - id: th3dungeon
+    version: 0.4.2
