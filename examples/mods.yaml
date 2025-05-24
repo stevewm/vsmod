@@ -1,9 +1,18 @@
 ---
-game_version: 1.20.10
-mods_dir: ./Mods
+# A maximal example configuration file
+game_version: 1.20.10 # the game version to check mod compatibility against
+mods_dir: /app/VintageStory/Mods # can be relative or absolute (default: $PWD/Mods)
+hooks: # optional hooks to run
+  download: # the command the hooks belong to
+    pre_run: 'rm -rf {{.ModsDir}}/*.zip' # runs before downloading mods
+    post_run: 'echo Downloaded {{.Mods | len}} mods' # runs after if downloading mods succeeds
+  list:
+    pre_run: "echo 'Listing mods in config file'"
+    post_run: "echo 'Listed {{.Mods | len}} mods'"
 mods:
-  - id: primitivesurvival
-    version: 3.7.7
+  - id: primitivesurvival # the path on the mod url on moddb (usually)
+    version: 3.7.6 # the mod version (without 'v' prefixed)
+    compatibility_check: true # check if the mod is compatible with game_version
   - id: ExpandedFoods
     version: 1.7.4
   - id: ACulinaryArtillery
@@ -11,6 +20,6 @@ mods:
   - id: CarryOn
     version: 1.8.0-rc.3
   - id: BetterRuins
-    version: 0.4.10
+    version: 0.4.9
   - id: th3dungeon
     version: 0.4.2

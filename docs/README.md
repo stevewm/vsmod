@@ -12,7 +12,9 @@ A command-line tool designed to manage [mods](https://mods.vintagestory.at/) for
 
 ![list command](./list.gif)
 
----
+### Hooks
+
+Pre and post-run hooks can be used to run arbitrary commands before or after a vsmod command runs. For example, you can use a pre-run hook to clear the mods directory before downloading new mods. Hooks also support templating values from the config file. See the documentation for Go's [text/template](https://pkg.go.dev/text/template) package for how to use templating.
 
 ## Installation
 
@@ -22,28 +24,7 @@ Download pre-built binaries for Windows, macOS and Linux on the [Releases](https
 
 Run `vsmod --help` to see the available commands and their options.
 
-### Config file
-
-Example config file:
-
-```yaml
-# mods.yaml
-game_version: 1.20.10 # the game version to check mod compatibility against
-mods_dir: /app/VintageStory/Mods # can be relative or absolute (default: $PWD/Mods)
-mods:
-  - id: primitivesurvival # the path on the mod url on moddb
-    version: 3.7.6 # the mod version (without the v)
-  - id: ExpandedFoods
-    version: 1.7.4
-  - id: ACulinaryArtillery
-    version: 1.2.5
-  - id: CarryOn
-    version: 1.8.0-rc.3
-  - id: BetterRuins
-    version: 0.4.9
-  - id: th3dungeon
-    version: 0.4.2
-```
+An example configuration file can be found in [examples/](./examples/mods.yaml).
 
 ## Container Image
 

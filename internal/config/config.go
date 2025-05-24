@@ -1,11 +1,14 @@
 package config
 
-import "path/filepath"
+import (
+	"path/filepath"
+)
 
 type ConfigFile struct {
-	ModsDir     string          `yaml:"mods_dir"`
-	GameVersion string          `yaml:"game_version"`
-	Mods        []ConfigFileMod `yaml:"mods"`
+	ModsDir     string                  `yaml:"mods_dir"`
+	GameVersion string                  `yaml:"game_version"`
+	Mods        []ConfigFileMod         `yaml:"mods"`
+	Hooks       map[string]CommandHooks `yaml:"hooks"`
 }
 
 type ConfigFileMod struct {
