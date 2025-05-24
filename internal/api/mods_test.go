@@ -15,8 +15,8 @@ var testClient = &http.Client{
 var testMod = Mod{
 	Releases: []ModRelease{
 		{Version: "1.0"},
-		{Version: "1.2"},
 		{Version: "1.1"},
+		{Version: "1.2"},
 	},
 }
 

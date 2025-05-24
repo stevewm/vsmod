@@ -67,6 +67,7 @@ type ModRelease struct {
 }
 
 func (m *Mod) LatestRelease() (*ModRelease, error) {
+	// fixme: dont rely on the moddb ordering releases properly
 	if len(m.Releases) == 0 {
 		return nil, fmt.Errorf("mod has no releases")
 	}
