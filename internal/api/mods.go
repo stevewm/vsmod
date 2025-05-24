@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -30,7 +31,12 @@ func (api *ModAPI) GetMod(modID string) (*Mod, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch mod info: %s: %w", modID, err)
 	}
-	defer resp.Body.Close()
+	defer func(b io.ReadCloser) {
+		if b == nil {
+			return
+		}
+		err = errors.Join(err, b.Close())
+	}(resp.Body)
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -67,6 +73,7 @@ type ModRelease struct {
 }
 
 func (m *Mod) LatestRelease() (*ModRelease, error) {
+	// fixme: dont rely on the moddb ordering releases properly
 	if len(m.Releases) == 0 {
 		return nil, fmt.Errorf("mod has no releases")
 	}

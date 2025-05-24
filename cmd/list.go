@@ -16,7 +16,18 @@ var listCmd = &cobra.Command{
 	Long: `List all mods in the specified config file. 
 	
 	This command will show each mod's ID along with its current version and the latest available version.`,
-	PreRun: toggleDebug,
+	Example: `vsmod list --file mods.yaml`,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		toggleDebug(cmd, args)
+		if err := conf.Hooks["list"].Pre_Run.Run(conf); err != nil {
+			log.Errorf("error running pre-run hook: %v", err)
+		}
+	},
+	PostRun: func(cmd *cobra.Command, args []string) {
+		if err := conf.Hooks["list"].Post_Run.Run(conf); err != nil {
+			log.Errorf("error running post-run hook: %v", err)
+		}
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		if err := listMods(); err != nil {
 			log.Fatalf("Error listing mods %v", err)

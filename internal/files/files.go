@@ -13,16 +13,24 @@ import (
 )
 
 func DownloadFile(URL string) ([]byte, error) {
-	response, err := http.Get(URL)
+	resp, err := http.Get(URL)
 	if err != nil {
 		return nil, fmt.Errorf("error fetching URL %s: %v", URL, err)
 	}
-	defer response.Body.Close()
-	if response.StatusCode != http.StatusOK {
-		return nil, errors.New(response.Status)
+
+	defer func(b io.ReadCloser) {
+		if b == nil {
+			return
+		}
+		err = errors.Join(err, b.Close())
+	}(resp.Body)
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New(resp.Status)
 	}
+
 	var data bytes.Buffer
-	_, err = io.Copy(&data, response.Body)
+	_, err = io.Copy(&data, resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +47,13 @@ func WriteFile(fs afero.Fs, fileName string, data []byte) error {
 	if err != nil {
 		return fmt.Errorf("error creating file %s: %w", fileName, err)
 	}
-	defer file.Close()
+
+	defer func(b io.Closer) {
+		if b == nil {
+			return
+		}
+		err = errors.Join(err, b.Close())
+	}(file)
 
 	_, err = file.Write(data)
 	if err != nil {

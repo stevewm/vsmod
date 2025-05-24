@@ -13,6 +13,12 @@ import (
 	"github.com/spf13/viper"
 )
 
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
+)
+
 var configFileLocation string
 var conf config.ConfigFile
 var modAPI = api.NewModAPI(&http.Client{Timeout: 10 * time.Second})
@@ -20,9 +26,11 @@ var modAPI = api.NewModAPI(&http.Client{Timeout: 10 * time.Second})
 var rootCmd = &cobra.Command{
 	Use:   "vsmod",
 	Short: "A CLI tool for managing Vintage Story mods in a declarative manner",
-	Long: `vsmod is a CLI tool for managing Vintage Story mods in a declarative manner by using a config file.
+	Long: `vsmod is a CLI tool for managing Vintage Story mods in a declarative manner using a config file.
 
-This file contains a list of mods and a desired version of each mod to download.`,
+This file contains a list of mods and a desired version of each mod to download.
+
+v` + version + ` (commit: ` + commit + `, date: ` + date + `)`,
 }
 
 func Execute() {

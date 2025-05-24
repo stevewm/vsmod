@@ -22,7 +22,17 @@ var downloadCmd = &cobra.Command{
 	Short:   "Download mods defined in a config file",
 	Long:    `Download mods defined in a config file. This command will download each mod to the directory set in mods_dir.`,
 	Example: `vsmod download --file mods.yaml`,
-	PreRun:  toggleDebug,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		toggleDebug(cmd, args)
+		if err := conf.Hooks["download"].Pre_Run.Run(conf); err != nil {
+			log.Errorf("error running pre-run hook: %v", err)
+		}
+	},
+	PostRun: func(cmd *cobra.Command, args []string) {
+		if err := conf.Hooks["download"].Post_Run.Run(conf); err != nil {
+			log.Errorf("error running post-run hook: %v", err)
+		}
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		forceCheck, _ := cmd.Flags().GetBool("force-compatibility-check")
 		if err := downloadMods(conf.Mods, conf.GameVersion, forceCheck); err != nil {
