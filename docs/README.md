@@ -2,6 +2,9 @@
 
 A command-line tool designed to manage [mods](https://mods.vintagestory.at/) for [Vintage Story](https://www.vintagestory.at/), a wilderness survival sandbox game, using a simple config file.
 
+> [!WARNING]
+> Early version. Expect bugs!
+
 ## Features
 
 ### Download mods
