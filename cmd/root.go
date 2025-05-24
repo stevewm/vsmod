@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -25,12 +26,8 @@ var modAPI = api.NewModAPI(&http.Client{Timeout: 10 * time.Second})
 
 var rootCmd = &cobra.Command{
 	Use:   "vsmod",
-	Short: "A CLI tool for managing Vintage Story mods in a declarative manner",
-	Long: `vsmod is a CLI tool for managing Vintage Story mods in a declarative manner using a config file.
-
-This file contains a list of mods and a desired version of each mod to download.
-
-v` + version + ` (commit: ` + commit + `, date: ` + date + `)`,
+	Short: "A CLI tool for managing Vintage Story mods",
+	Long:  `vsmod is a CLI tool for managing Vintage Story mods in a declarative manner using a config file.`,
 }
 
 func Execute() {
@@ -44,6 +41,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&configFileLocation, "file", "", "config file (default is $PWD/mods.yaml)")
 	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "verbose logging")
+	rootCmd.Version = fmt.Sprintf("%s (Built on %s from Git SHA %s)", version, date, commit)
 }
 
 func initConfig() {

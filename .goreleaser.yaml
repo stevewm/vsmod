@@ -17,6 +17,11 @@ builds:
     goarch:
       - amd64
       - arm64
+    ldflags:
+      - "-s -w"
+      - "-X vsmod/cmd.version={{ .Version }}"
+      - "-X vsmod/cmd.commit={{ .Commit }}"
+      - "-X vsmod/cmd.date={{ .Date }}"
 
 archives:
   - format: tar.gz
