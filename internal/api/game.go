@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -41,7 +42,13 @@ func (api *GameAPI) GetGameReleases(channel string) ([]*semver.Version, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch game releases: %v", err)
 	}
-	defer resp.Body.Close()
+	
+	defer func(b io.ReadCloser) {
+		if b == nil {
+			return
+		}
+		err = errors.Join(err, b.Close())
+	}(resp.Body)
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
