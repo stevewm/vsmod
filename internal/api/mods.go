@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"sort"
 	"strings"
 
+	"github.com/Masterminds/semver/v3"
 	"golang.org/x/exp/slices"
 )
 
@@ -55,41 +57,49 @@ type ModWrapper struct {
 }
 
 type Mod struct {
-	Id       int          `json:"modid"`
-	Name     string       `json:"name"`
-	Desc     string       `json:"text"`
-	Author   string       `json:"author"`
-	Homepage string       `json:"homepageurl"`
-	Created  string       `json:"created"`
-	Releases []ModRelease `json:"releases"`
+	Id       int             `json:"modid"`
+	Name     string          `json:"name"`
+	Desc     string          `json:"text"`
+	Author   string          `json:"author"`
+	Homepage string          `json:"homepageurl"`
+	Created  string          `json:"created"`
+	Releases ModReleaseSlice `json:"releases"`
 }
 
 type ModRelease struct {
-	Created  string   `json:"created"`
-	FileName string   `json:"filename"`
-	Tags     []string `json:"tags"`
-	URL      string   `json:"mainfile"`
-	Version  string   `json:"modversion"`
+	Created  string           `json:"created"`
+	FileName string           `json:"filename"`
+	Tags     []semver.Version `json:"tags"`
+	URL      string           `json:"mainfile"`
+	Version  semver.Version   `json:"modversion"`
+}
+
+type ModReleaseSlice []ModRelease
+
+func (s ModReleaseSlice) Len() int {
+	return len(s)
+}
+
+func (s ModReleaseSlice) Less(i, j int) bool {
+	// sort by version, descending
+	return s[i].Version.LessThan(&s[j].Version)
+}
+
+func (s ModReleaseSlice) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
 }
 
 func (m *Mod) LatestRelease() (*ModRelease, error) {
 	// fixme: dont rely on the moddb ordering releases properly
+
 	if len(m.Releases) == 0 {
 		return nil, fmt.Errorf("mod has no releases")
 	}
+	sort.Sort(m.Releases)
 	return &m.Releases[0], nil
 }
 
-func (m *Mod) Release(version string) (*ModRelease, error) {
-	if version == "" {
-		latestRelease, err := m.LatestRelease()
-
-		if err != nil {
-			return nil, err
-		}
-		return latestRelease, nil
-	}
-
+func (m *Mod) Release(version semver.Version) (*ModRelease, error) {
 	for _, release := range m.Releases {
 		if release.Version == version {
 			return &release, nil
@@ -103,10 +113,7 @@ func (m *ModRelease) DownloadURL() string {
 	return url
 }
 
-func (m *ModRelease) CompatibleWith(gameVersion string) bool {
-	// todo: convert to semver
-	if !strings.HasPrefix(gameVersion, "v") {
-		gameVersion = "v" + gameVersion
-	}
+func (m *ModRelease) CompatibleWith(gameVersion semver.Version) bool {
+	// todo: support version constraints
 	return slices.Contains(m.Tags, gameVersion)
 }

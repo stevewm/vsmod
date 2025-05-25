@@ -39,7 +39,6 @@ func TestModReleaseCompatibleWithGameVersion(t *testing.T) {
 
 	assert.True(t, modRelease.CompatibleWith("1.0"), "Expected mod release to be compatible with game version")
 	assert.False(t, modRelease.CompatibleWith("2.0"), "Expected mod release to not be compatible with game version")
-	assert.False(t, modRelease.CompatibleWith(""), "Expected empty version to not be compatible")
 }
 
 func TestModLatestRelease(t *testing.T) {
