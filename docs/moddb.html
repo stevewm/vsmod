@@ -1,0 +1,81 @@
+<p>
+  A fast command-line tool designed to manage mod installation in a declarative manner, using a simple config file as the source of truth.
+</p>
+<p>
+  <strong>
+    <span style="background-color: #e74c3c;">
+      See <a style="background-color: #e74c3c;" href="https://github.com/stevewm/vsmod">GitHub</a> for the latest binaries for Windows, Linux, and macOS.
+    </span>
+  </strong>
+  <strong>
+    Versions will not be updated here regularly due to the ModDB API not supporting automated publishing.
+  </strong>
+</p>
+
+<h2>Usage</h2>
+<h3>Download mods</h3>
+<p>
+    To download the mods listed in the config simply run: 
+    <pre>vsmod download --file mods.yaml</pre>
+</p>
+
+<h3>List mods</h3>
+<p>
+    You can also list the mods in the config file by running: 
+    <pre>vsmod list --file mods.yaml</pre>
+
+    This will display the mods in a table, along with the latest version available on the ModDB.
+</p>
+
+<h3>Hooks</h3>
+<p>
+    You can define hooks in the config file to run commands before and after downloading or listing mods.
+    This is useful for cleaning up the mods directory or performing additional actions.
+</p>
+
+<h3>Mod compatibility check</h3>
+<p>
+    By default, mods are not checked for compatibility with the game version. You can enable this by setting
+    <code>compatibility_check: true</code> in the mod entry in the config file.
+    This will check if the mod is compatible with the specified game version. 
+</p>
+
+<p>
+    <strong>Do note that many mods do not correctly specify their compatibility, so this may cause unnecessary errors.</strong>
+</p>
+
+<h3>Modpacks</h3>
+
+<p>
+    <code>vsmod</code> doesn't have a built-in concept of modpacks but you can create multiple config files, allowing you to
+    manage different sets of mods.
+</p>
+
+<h3>Example config file</h3>
+<pre>
+---
+# A maximal example configuration file
+game_version: 1.20.10 # the game version to check mod compatibility against
+mods_dir: /app/VintageStory/Mods # can be relative or absolute (default: $PWD/Mods)
+hooks: # optional hooks to run
+  download: # the command the hooks belong to
+    pre_run: 'rm -rf {{.ModsDir}}/*.zip' # runs before downloading mods
+    post_run: 'echo Downloaded {{.Mods | len}} mods' # runs after if downloading mods succeeds
+  list:
+    pre_run: "echo 'Listing mods in config file'"
+    post_run: "echo 'Listed {{.Mods | len}} mods'"
+mods:
+  - id: primitivesurvival # the path on the mod url on moddb (usually)
+    version: 3.7.6 # the mod version (without 'v' prefixed)
+    compatibility_check: true # check if the mod is compatible with game_version (default: false)
+  - id: ExpandedFoods
+    version: 1.7.4
+  - id: ACulinaryArtillery
+    version: 1.2.5
+  - id: CarryOn
+    version: 1.8.0-rc.3
+  - id: BetterRuins
+    version: 0.4.9
+  - id: th3dungeon
+    version: 0.4.2
+</pre>
