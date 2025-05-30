@@ -15,7 +15,7 @@ import (
 const GAME_API_BASE_URL = "https://api.vintagestory.at/"
 
 type GameRelease struct {
-	Version string `json:"version"`
+	Version semver.Constraints `json:"version"`
 }
 
 type GameAPI struct {
@@ -42,7 +42,7 @@ func (api *GameAPI) GetGameReleases(channel string) ([]*semver.Version, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch game releases: %v", err)
 	}
-	
+
 	defer func(b io.ReadCloser) {
 		if b == nil {
 			return
@@ -55,7 +55,7 @@ func (api *GameAPI) GetGameReleases(channel string) ([]*semver.Version, error) {
 		return nil, fmt.Errorf("failed to read response body: %v", err)
 	}
 
-	var releases map[string]interface{}
+	var releases map[string]GameRelease
 	if err := json.Unmarshal(body, &releases); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal JSON: %v", err)
 	}

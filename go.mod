@@ -4,6 +4,7 @@ go 1.23.6
 
 require (
 	github.com/go-yaml/yaml v2.1.0+incompatible
+	github.com/samber/lo v1.50.0
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.1
 	github.com/stretchr/testify v1.10.0

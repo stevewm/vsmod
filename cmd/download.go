@@ -9,6 +9,7 @@ import (
 	"vsmod/internal/config"
 	"vsmod/internal/files"
 
+	"github.com/Masterminds/semver/v3"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
@@ -23,7 +24,6 @@ var downloadCmd = &cobra.Command{
 	Long:    `Download mods defined in a config file. This command will download each mod to the directory set in mods_dir.`,
 	Example: `vsmod download --file mods.yaml`,
 	PreRun: func(cmd *cobra.Command, args []string) {
-		toggleDebug(cmd, args)
 		if err := conf.Hooks["download"].Pre_Run.Run(conf); err != nil {
 			log.Errorf("error running pre-run hook: %v", err)
 		}
@@ -47,62 +47,53 @@ func init() {
 	AppFs = afero.NewBasePathFs(afero.NewOsFs(), conf.Dir())
 }
 
-func downloadMod(mod config.ConfigFileMod, gameVersion string, forceCheck bool) error {
-	modDetails, err := modAPI.GetMod(mod.ID)
+func downloadMod(configMod config.ConfigFileMod, gameVersion semver.Constraints, forceCheck bool) error {
+	mod, err := modAPI.GetMod(configMod.ID)
 
 	if err != nil {
 		return err
 	}
 
-	if mod.CompatCheck || forceCheck {
-		log.Debugf("Checking compatibility between %s %s and game %s", mod.ID, mod.Version, gameVersion)
-		log.Debugf("Force check: %t", forceCheck)
-
-		compatible := false
-		for _, release := range modDetails.Releases {
-			if release.CompatibleWith(gameVersion) {
-				compatible = true
-				break
-			}
-		}
-		if !compatible {
-			return fmt.Errorf("%s %v not compatible with game version %s", mod.ID, mod.Version, gameVersion)
-		}
+	version, err := mod.Release(configMod.Version)
+	if err != nil {
+		return fmt.Errorf("mod %s version %s not found: %w", configMod.ID, configMod.Version, err)
 	}
 
-	release, err := modDetails.Release(mod.Version)
+	if (configMod.CompatCheck || forceCheck) && !version.CompatibleWith(gameVersion) {
+		log.Debugf("Checking mod %s version %s tags: %v against game version %s", configMod.ID, version.Version, version.Tags, gameVersion)
+		return fmt.Errorf("mod %s version %s is not compatible with game version %s", configMod.ID, version.Version, gameVersion)
+	}
+
+	log.Debug("Found compatible releases: ", version)
+
+	log.Infof("Downloading mod %s version %s\n", configMod.ID, version.Version)
+	log.Debugf("Download URL: %s", version.DownloadURL())
+	data, err := files.DownloadFile(version.DownloadURL())
 	if err != nil {
 		return err
 	}
 
-	log.Infof("Downloading mod %s version %s\n", mod.ID, release.Version)
-	log.Debugf("Download URL: %s", release.DownloadURL())
-	data, err := files.DownloadFile(release.DownloadURL())
-	if err != nil {
-		return err
-	}
-
-	if err := files.WriteFile(AppFs, filepath.Join("Mods", release.FileName), data); err != nil {
+	if err := files.WriteFile(AppFs, filepath.Join("Mods", version.FileName), data); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func downloadMods(mods []config.ConfigFileMod, gameVersion string, forceCheck bool) error {
+func downloadMods(configFileMods []config.ConfigFileMod, gameVersion semver.Constraints, forceCheck bool) error {
 	start := time.Now()
 
 	var wg sync.WaitGroup
-	errCh := make(chan error, len(mods))
+	errCh := make(chan error, len(configFileMods))
 
-	for _, mod := range mods {
+	for _, configFileMod := range configFileMods {
 		wg.Add(1)
 		go func(mod config.ConfigFileMod) {
 			defer wg.Done()
 			if err := downloadMod(mod, gameVersion, forceCheck); err != nil {
 				errCh <- err
 			}
-		}(mod)
+		}(configFileMod)
 	}
 
 	wg.Wait()
