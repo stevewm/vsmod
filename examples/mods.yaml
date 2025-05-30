@@ -1,6 +1,6 @@
 ---
 # A maximal example configuration file
-game_version: "~1.20.0" # the game version to check mod compatibility against (supports semver ranges)
+game_version: "~1.20.0" # the game version to check mod compatibility against (supports semver constraints)
 mods_dir: /app/VintageStory/Mods # can be relative or absolute (default: $PWD/Mods)
 hooks: # optional hooks to run
   download: # the command the hooks belong to
@@ -14,7 +14,7 @@ mods:
     version: 3.7.7 # the mod version (without 'v' prefixed)
     compatibility_check: true # check if the mod is compatible with game_version constraint
   - id: ExpandedFoods
-    version: 1.7.4 # also supports semver ranges (e.g. "<2.0.0")
+    version: 1.7.4 # also supports semver constraints (e.g. "<2.0.0")
   - id: ACulinaryArtillery
     version: 1.2.5
   - id: CarryOn
