@@ -14,11 +14,11 @@ mods:
     version: 3.7.7 # the mod version (without 'v' prefixed)
     compatibility_check: true # check if the mod is compatible with game_version constraint
   - id: ExpandedFoods
-    version: 1.7.4 # also supports semver constraints (e.g. "<2.0.0")
+    version: 1.7.4 
   - id: ACulinaryArtillery
     version: 1.2.5
   - id: CarryOn
-    version: 1.8.0
+    version: ">=1.8.0" # also supports semver constraints
   - id: BetterRuins
     version: 0.4.9
   - id: th3dungeon

@@ -59,10 +59,8 @@ func downloadMod(configMod config.ConfigFileMod, gameVersion semver.Constraints,
 		return fmt.Errorf("mod %s version %s not found: %w", configMod.ID, configMod.Version, err)
 	}
 
-	log.Debugf("compatCheck: %v, forceCheck: %v, compatibleWith: %v", configMod.CompatCheck, forceCheck, version.CompatibleWith(gameVersion))
 	if (configMod.CompatCheck || forceCheck) && !version.CompatibleWith(gameVersion) {
 		log.Debugf("Checking mod %s version %s tags: %v against game version %s", configMod.ID, version.Version, version.Tags, gameVersion)
-		log.Debugf("releases: %v", mod.Releases)
 		return fmt.Errorf("mod %s version %s is not compatible with game version %s", configMod.ID, version.Version, gameVersion)
 	}
 
