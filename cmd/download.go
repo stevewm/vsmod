@@ -24,7 +24,6 @@ var downloadCmd = &cobra.Command{
 	Long:    `Download mods defined in a config file. This command will download each mod to the directory set in mods_dir.`,
 	Example: `vsmod download --file mods.yaml`,
 	PreRun: func(cmd *cobra.Command, args []string) {
-		toggleDebug(cmd, args)
 		if err := conf.Hooks["download"].Pre_Run.Run(conf); err != nil {
 			log.Errorf("error running pre-run hook: %v", err)
 		}

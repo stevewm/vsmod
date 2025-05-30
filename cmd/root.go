@@ -25,9 +25,10 @@ var conf config.ConfigFile
 var modAPI = api.NewModAPI(&http.Client{Timeout: 10 * time.Second})
 
 var rootCmd = &cobra.Command{
-	Use:   "vsmod",
-	Short: "A CLI tool for managing Vintage Story mods",
-	Long:  `vsmod is a CLI tool for managing Vintage Story mods in a declarative manner using a config file.`,
+	Use:              "vsmod",
+	Short:            "A CLI tool for managing Vintage Story mods",
+	Long:             `vsmod is a CLI tool for managing Vintage Story mods in a declarative manner using a config file.`,
+	PersistentPreRun: toggleDebug,
 }
 
 func Execute() {
