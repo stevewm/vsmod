@@ -11,6 +11,12 @@ A command-line tool designed to manage [mods](https://mods.vintagestory.at/) for
 
 ![download command](./download.gif)
 
+#### Mod and Game version compatibility
+
+Each time a new game version is released mod authors must manually mark their mods as compatible with it. Many don't bother to do this, breaking reliable compatibility checks.
+
+To work around this, `game_version` supports [semver ranges](https://github.com/Masterminds/semver#checking-version-constraints). For example, setting it to `~1.20.0` will mean as long as a mod is marked as compatible for `1.20.0`, `1.20.1`, `1.20.2`, etc., it will be downloaded.
+
 ### List mods
 
 ![list command](./list.gif)
@@ -32,6 +38,7 @@ An example configuration file can be found in [examples/](./examples/mods.yaml).
 ## Container Image
 
 vsmod is also built as a container image [here](https://github.com/stevewm/vsmod/pkgs/container/vsmod).
+
 
 ## Planned Features
 

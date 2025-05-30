@@ -15,7 +15,7 @@ import (
 const GAME_API_BASE_URL = "https://api.vintagestory.at/"
 
 type GameRelease struct {
-	Version string `json:"version"`
+	Version semver.Constraints `json:"version"`
 }
 
 type GameAPI struct {
