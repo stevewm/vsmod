@@ -40,7 +40,7 @@ jobs:
           input: ${{ steps.goreleaser.outputs.artifacts }}
           raw-output: true
           script: |-
-            .[] | select(.name=="vsmod") | .path
+            .[] | select(.name=="vsmod" or .name=="vsmod.exe") | .path
 
       - name: vsmod ${{ matrix.command }}
         run: ${{ github.workspace }}/${{ steps.jq.outputs.output }} ${{ matrix.command }} --file ./examples/mods.yaml --debug
