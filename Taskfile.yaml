@@ -21,6 +21,7 @@ tasks:
     desc: Run all linters
     cmds:
       - golangci-lint run
+      - go fmt ./...
     silent: false
 
   gifs:
