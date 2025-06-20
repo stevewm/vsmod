@@ -8,6 +8,7 @@ on:
 jobs:
   run:
     strategy:
+      fail-fast: false
       matrix:
         command: [list, download, ""]
         platforms: [ubuntu-latest, windows-latest, macos-latest]
