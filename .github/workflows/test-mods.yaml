@@ -38,8 +38,9 @@ jobs:
         with: 
           compact: true
           input: ${{ steps.goreleaser.outputs.artifacts }}
+          raw-output: true
           script: |-
-            jq -r '.[] | select(.name=="vsmod") | .path'
+            .[] | select(.name=="vsmod") | .path
 
       - name: vsmod ${{ matrix.command }}
         run: ${{ github.workspace }}/${{ steps.jq.outputs.output }} ${{ matrix.command }} --file ./examples/mods.yaml --debug
