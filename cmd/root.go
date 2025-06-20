@@ -25,10 +25,17 @@ var conf config.ConfigFile
 var modAPI = api.NewModAPI(&http.Client{Timeout: 10 * time.Second})
 
 var rootCmd = &cobra.Command{
-	Use:              "vsmod",
-	Short:            "A CLI tool for managing Vintage Story mods",
-	Long:             `vsmod is a CLI tool for managing Vintage Story mods in a declarative manner using a config file.`,
-	PersistentPreRun: toggleDebug,
+	Use:   "vsmod",
+	Short: "A CLI tool for managing Vintage Story mods",
+	Long:  `vsmod is a CLI tool for managing Vintage Story mods in a declarative manner using a config file.`,
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		toggleDebug()
+		return runHooks(cmd, "pre")
+	},
+	PersistentPostRunE: func(cmd *cobra.Command, args []string) error {
+		toggleDebug()
+		return runHooks(cmd, "post")
+	},
 }
 
 func Execute() {
@@ -42,6 +49,8 @@ func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&configFileLocation, "file", "", "config file (default is $PWD/mods.yaml)")
 	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "verbose logging")
+	rootCmd.PersistentFlags().BoolP("hooks", "H", true, "run pre/post hooks (default: true)")
+
 	rootCmd.Version = fmt.Sprintf("%s (Built on %s from Git SHA %s)", version, date, commit)
 }
 
@@ -70,4 +79,28 @@ func initConfig() {
 		log.Errorf("Error unmarshalling config file: %v\n", err)
 		os.Exit(1)
 	}
+}
+
+func runHooks(cmd *cobra.Command, phase string) error {
+	hooksEnabled, _ := cmd.Flags().GetBool("hooks")
+
+	if !hooksEnabled {
+		return nil
+
+	}
+
+	if hook, exists := conf.Hooks[cmd.Name()]; exists {
+		switch phase {
+		case "pre":
+			return hook.Pre_Run.Run(conf)
+		case "post":
+			return hook.Post_Run.Run(conf)
+		}
+	} else {
+		log.Warnf("No %s hook defined for command %s", phase, cmd.Name())
+	}
+
+	log.Debugf("Running %s hook for command %s", phase, cmd.Name())
+
+	return nil
 }

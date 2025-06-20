@@ -3,6 +3,7 @@ package config
 import (
 	"bytes"
 	"os/exec"
+	"runtime"
 	"text/template"
 
 	log "github.com/sirupsen/logrus"
@@ -28,6 +29,12 @@ func (h Hook) Run(data any) error {
 	}
 
 	log.Debugf("Running hook: \"%s", buf.String()+"\"")
+	if runtime.GOOS == "windows" {
+		cmd := exec.Command("cmd", "/C", buf.String())
+		cmd.Stdout = log.StandardLogger().Out
+		cmd.Stderr = log.StandardLogger().Out
+		return cmd.Run()
+	}
 	cmd := exec.Command("sh", "-c", buf.String())
 	cmd.Stdout = log.StandardLogger().Out
 	cmd.Stderr = log.StandardLogger().Out

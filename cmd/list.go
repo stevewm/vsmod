@@ -8,25 +8,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// listCmd represents the list command
 var listCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls"},
 	Short:   "List all mods in the specified config file",
 	Long: `List all mods in the specified config file. 
-	
+
 	This command will show each mod's ID along with its current version and the latest available version.`,
 	Example: `vsmod list --file mods.yaml`,
-	PreRun: func(cmd *cobra.Command, args []string) {
-		if err := conf.Hooks["list"].Pre_Run.Run(conf); err != nil {
-			log.Errorf("error running pre-run hook: %v", err)
-		}
-	},
-	PostRun: func(cmd *cobra.Command, args []string) {
-		if err := conf.Hooks["list"].Post_Run.Run(conf); err != nil {
-			log.Errorf("error running post-run hook: %v", err)
-		}
-	},
 	Run: func(cmd *cobra.Command, args []string) {
 		if err := listMods(); err != nil {
 			log.Fatalf("Error listing mods %v", err)
