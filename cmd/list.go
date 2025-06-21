@@ -11,8 +11,8 @@ import (
 var listCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls"},
-	Short:   "List all mods in the specified config file",
-	Long: `List all mods in the specified config file. 
+	Short:   "List mods specified in the config file",
+	Long: `List mods specified in the config file 
 
 	This command will show each mod's ID along with its current version and the latest available version.`,
 	Example: `vsmod list --file mods.yaml`,

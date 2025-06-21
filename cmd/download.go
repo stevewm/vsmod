@@ -20,8 +20,8 @@ var AppFs afero.Fs
 var downloadCmd = &cobra.Command{
 	Use:     "download",
 	Aliases: []string{"dl"},
-	Short:   "Download mods defined in a config file",
-	Long:    `Download mods defined in a config file. This command will download each mod to the directory set in mods_dir.`,
+	Short:   "Download mods specified in the config file",
+	Long:    `Download mods specified in the config file to the directory set in 'mods_dir'`,
 	Example: `vsmod download --file mods.yaml`,
 	Run: func(cmd *cobra.Command, args []string) {
 		forceCheck, _ := cmd.Flags().GetBool("force-compatibility-check")

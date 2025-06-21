@@ -25,9 +25,8 @@ var conf config.ConfigFile
 var modAPI = api.NewModAPI(&http.Client{Timeout: 10 * time.Second})
 
 var rootCmd = &cobra.Command{
-	Use:   "vsmod",
-	Short: "A CLI tool for managing Vintage Story mods",
-	Long:  `vsmod is a CLI tool for managing Vintage Story mods in a declarative manner using a config file.`,
+	Use:  "vsmod",
+	Long: `vsmod - commandline tool for managing Vintage Story mods`,
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		toggleDebug()
 		return runHooks(cmd, "pre")
@@ -86,7 +85,6 @@ func runHooks(cmd *cobra.Command, phase string) error {
 
 	if !hooksEnabled {
 		return nil
-
 	}
 
 	if hook, exists := conf.Hooks[cmd.Name()]; exists {
