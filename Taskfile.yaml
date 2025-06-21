@@ -39,3 +39,16 @@ tasks:
       - test -f README.md
     cmds:
       - pandoc README.md -o README.html  
+
+  package:
+    desc: |
+      Fetches the latest vsmod Windows release and renames it to include the version for the ModDB
+    silent: true
+    preconditions:
+      - which zip
+      - test -d dist
+    cmds:
+      - |
+        rel=$(curl -s https://api.github.com/repos/stevewm/vsmod/releases/latest | jq -r .tag_name)
+        url=$(curl -s https://api.github.com/repos/stevewm/vsmod/releases/latest | jq -r '.assets[] | select(.name=="vsmod_Windows_x86_64.zip") | .browser_download_url')
+        curl -sL "$url" -o "dist/vsmod_Windows_x86_64_${rel}.zip"
