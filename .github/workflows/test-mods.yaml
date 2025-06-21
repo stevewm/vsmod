@@ -8,9 +8,11 @@ on:
 jobs:
   run:
     strategy:
+      fail-fast: false
       matrix:
         command: [list, download]
-    runs-on: ubuntu-latest
+        platforms: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.platforms }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -22,7 +24,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v6
         with: 
           version: latest
-          args: build --snapshot --clean --single-target # todo: multi-arch support
+          args: build --snapshot --clean --single-target
 
       - name: output
         env:
@@ -30,13 +32,15 @@ jobs:
         run: |
             echo $ARTIFACTS
 
-      - uses: cloudposse/github-action-jq@0.4.0
+      - name: get binary path
+        uses: cloudposse/github-action-jq@0.4.0
         id: jq
-        with:
+        with: 
           compact: true
           input: ${{ steps.goreleaser.outputs.artifacts }}
-          script: |- 
-            .[] | select(.goos == "linux" and .goarch == "amd64") | .path
+          raw-output: true
+          script: |-
+            .[] | select(.name=="vsmod" or .name=="vsmod.exe") | .path
 
       - name: vsmod ${{ matrix.command }}
-        run: ${{ github.workspace }}/${{ steps.jq.outputs.output }} ${{ matrix.command }} --file ./examples/mods.yaml
+        run: ${{ github.workspace }}/${{ steps.jq.outputs.output }} ${{ matrix.command }} --file ./examples/mods.yaml --debug
