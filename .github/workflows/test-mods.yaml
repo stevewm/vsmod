@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        command: [list, download, ""]
+        command: [list, download]
         platforms: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.platforms }}
     steps:
