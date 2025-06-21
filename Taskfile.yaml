@@ -29,3 +29,13 @@ tasks:
     cmds:
       - vhs download.tape 
       - vhs list.tape
+
+  readme:
+    desc: |
+      Convert the README.md to ModDB-friendly HTML
+    dir: docs
+    preconditions:
+      - which pandoc
+      - test -f README.md
+    cmds:
+      - pandoc README.md -o README.html  

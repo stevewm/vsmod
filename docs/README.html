@@ -1,0 +1,60 @@
+<h1 id="vintage-story-mod-manager-vsmod">Vintage Story Mod Manager
+(<code>vsmod</code>)</h1>
+<p>A command-line tool designed to manage <a
+href="https://mods.vintagestory.at/">mods</a> for <a
+href="https://www.vintagestory.at/">Vintage Story</a>, a wilderness
+survival sandbox game, using a simple config file.</p>
+<blockquote>
+<p>[!WARNING] Early version. Expect bugs!</p>
+</blockquote>
+<h2 id="features">Features</h2>
+<h3 id="download-mods">Download mods</h3>
+<figure>
+<img src="https://github.com/stevewm/vsmod/raw/main/docs/download.gif"
+alt="download command" />
+<figcaption aria-hidden="true">download command</figcaption>
+</figure>
+<h4 id="mod-and-game-version-compatibility">Mod and Game version
+compatibility</h4>
+<p>Each time a new game version is released mod authors must manually
+mark their mods as compatible with it. Many don’t bother to do this,
+breaking reliable compatibility checks.</p>
+<p>To work around this, <code>game_version</code> supports <a
+href="https://semver.org/#spec-item-11">semver constraints</a>. For
+example, setting it to <code>~1.20.0</code> will mean as long as a mod
+is marked as compatible for <code>1.20.0</code>, <code>1.20.1</code>,
+<code>1.20.2</code>, etc., it will be downloaded.</p>
+<h3 id="list-mods">List mods</h3>
+<figure>
+<img src="https://github.com/stevewm/vsmod/raw/main/docs/list.gif"
+alt="list command" />
+<figcaption aria-hidden="true">list command</figcaption>
+</figure>
+<h3 id="hooks">Hooks</h3>
+<p>Pre and post-run hooks can be used to run arbitrary commands before
+or after a vsmod command runs. For example, you can use a pre-run hook
+to clear the mods directory before downloading new mods. Hooks also
+support templating values from the config file. See the documentation
+for Go’s <a href="https://pkg.go.dev/text/template">text/template</a>
+package for how to use templating.</p>
+<p>Hooks can be skipped by passing <code>--hooks=false</code>.</p>
+<h2 id="installation">Installation</h2>
+<p>Download pre-built binaries for Windows, macOS and Linux on the <a
+href="https://github.com/stevewm/homelab/releases">Releases</a>
+page.</p>
+<h2 id="usage">Usage</h2>
+<p>Run <code>vsmod --help</code> to see the available commands and their
+options.</p>
+<p>An example configuration file can be found in <a
+href="https://github.com/stevewm/vsmod/raw/main/examples/mods.yaml">examples/</a>.</p>
+<h2 id="container-image">Container Image</h2>
+<p>vsmod is also built as a <a
+href="https://github.com/stevewm/vsmod/pkgs/container/vsmod">container
+image</a>.</p>
+<h2 id="planned-features">Planned Features</h2>
+<ul>
+<li>Mod version updating</li>
+</ul>
+<h2 id="support">Support</h2>
+<p>Please raise an issue if you need help or have a feature request.
+Even better, raise a pull request if you’re able.</p>

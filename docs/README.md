@@ -9,7 +9,7 @@ A command-line tool designed to manage [mods](https://mods.vintagestory.at/) for
 
 ### Download mods
 
-![download command](./download.gif)
+![download command](https://github.com/stevewm/vsmod/raw/main/docs/download.gif)
 
 #### Mod and Game version compatibility
 
@@ -19,7 +19,7 @@ To work around this, `game_version` supports [semver constraints](https://semver
 
 ### List mods
 
-![list command](./list.gif)
+![list command](https://github.com/stevewm/vsmod/raw/main/docs/list.gif)
 
 ### Hooks
 
@@ -35,7 +35,7 @@ Download pre-built binaries for Windows, macOS and Linux on the [Releases](https
 
 Run `vsmod --help` to see the available commands and their options.
 
-An example configuration file can be found in [examples/](./examples/mods.yaml).
+An example configuration file can be found in [examples/](https://github.com/stevewm/vsmod/raw/main/examples/mods.yaml).
 
 ## Container Image
 
