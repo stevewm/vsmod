@@ -29,7 +29,7 @@ Hooks can be skipped by passing `--hooks=false`.
 
 ## Installation
 
-Download pre-built binaries for Windows, macOS and Linux on the [Releases](https://github.com/stevewm/homelab/releases) page.
+Download pre-built binaries for Windows, macOS and Linux on the [Releases](https://github.com/stevewm/vsmod/releases) page.
 
 ## Usage
 
