@@ -1,4 +1,4 @@
-FROM gcr.io/distroless/static-debian12
+FROM debian:bookworm-slim
 
 COPY vsmod /
 
