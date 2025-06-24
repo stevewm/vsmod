@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 
-	"path/filepath"
 	"sync"
 	"time"
 	"vsmod/internal/config"
@@ -14,8 +13,6 @@ import (
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
-
-var AppFs afero.Fs
 
 var downloadCmd = &cobra.Command{
 	Use:     "download",
@@ -34,7 +31,6 @@ var downloadCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(downloadCmd)
 	downloadCmd.PersistentFlags().Bool("force-compatibility-check", false, "Force check for mod compatibility")
-	AppFs = afero.NewBasePathFs(afero.NewOsFs(), conf.Dir())
 }
 
 func downloadMod(configMod config.ConfigFileMod, gameVersion semver.Constraints, forceCheck bool) error {
@@ -62,8 +58,8 @@ func downloadMod(configMod config.ConfigFileMod, gameVersion semver.Constraints,
 	if err != nil {
 		return err
 	}
-
-	if err := files.WriteFile(AppFs, filepath.Join("Mods", version.FileName), data); err != nil {
+	fs := afero.NewBasePathFs(afero.NewOsFs(), conf.Dir())
+	if err := files.WriteFile(fs, version.FileName, data); err != nil {
 		return err
 	}
 
